@@ -1,0 +1,69 @@
+---
+title: "Exponential distribution comparison with the Central Limit Theorem"
+author: "Steve Brasell"
+date: "Sunday, December 27, 2015"
+output: pdf_document
+---
+
+
+## Exponential Distribution Exploration
+We investigate the exponential distribution by applying the Law of Large Numbers multiple sample to show that the resulting distribution is normal. This shows an example of the Central Limit Theorem (CLT).
+
+By applying a large set of samples of a given exponential distribution we expect from the CLT that the resulting distribution of the sample means will approach a normal distribution given by a mean of lambda and a variance given by $\sigma^2 /n$. In this report we show that this is the case by doing a sampling exercise with a repeated sample of of 40 observations of the exponential distribution repeated 1000 times. 
+
+The exponential distribution is characterised by the mean given by $\mu = \frac{1}{\lambda}$ and the standard deviation given by $\sigma = \frac{1}{\lambda}$. In this exercise we use a lambda of 0.2. This results in an expected mean of 5 and and expected standard deviation of 5.
+
+The sampling is done in R using the following simulation:
+```{r}
+set.seed(1000)
+n <- 40
+simulations <- 1000
+lambda <- .2
+simulation_matrix <- matrix(data = rexp(n * simulations, lambda), simulations)
+simulation_means <- apply(X = simulation_matrix, 1, mean)
+simulation_vars <- apply(X = simulation_matrix, 1, var)
+```
+
+## Compare sample mean and the theoretical mean
+The mean from the above simulation in this case is given by 4.98 (2dp), this is close to the theoretical mean of 5. Using a t-test to show this further does not make sense as we already know from the code that the theoretical coded mean is 5 - further testing will be done in section 3.
+```{r}
+x_bar<-mean(simulation_means)
+x_bar
+```
+
+
+## Compare the sample variance to the theoretical variance
+The sample standard deviation as given by the simulation is 4.97 (2dp) this is close to the theoretical variance of 5.
+
+```{r}
+sd<-sqrt(mean(simulation_vars))
+sd
+```
+
+## The distribution is approximately normal
+From the historgram given below the distribution of the exponential distributions means is approximatly a bell shapped curve, as would be expected with a normal distribution:
+
+```{r, echo=FALSE}
+hist(simulation_means, xlab="Mean", main="Histogram of Exponential Distribution Means", breaks = 20)
+```
+
+Additionally we can see that the mean and variance approaches the theoretical values as given by the CLT (though the variance of the mean is not as close as we would like but this is due to the low sample size):
+
+```{r}
+x_bar
+sample_clt_mean_var<-var(simulation_means)
+sample_clt_mean_var
+exp_sd<-(1/lambda)
+theoretical_clt_var<-exp_sd^2/n
+theoretical_clt_var
+
+```
+
+We test for normality using the Shapiro-Wilk test of normality, this results in a p-value of approximately zero, such that we reject the null hypothesis that the distribution is not normal. This indicates that the distribution of means from the exponential distribution sampling results is a normal distribution at stingent statistical levels of acceptance of 1% or less:
+
+```{r}
+shapiro.test(simulation_means)
+```
+
+## Conclusion
+We have shown by simulation that the theoretical values of the mean and variance are given by the simulation. And that the resulting distribution of the exponential distributions means from sampling, approaches a normal distribution as indicated by the CLT.

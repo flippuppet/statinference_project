@@ -1,0 +1,9 @@
+
+---
+title: "Exponential distribution comparison with the Central Limit Theorem"
+author: "Steve Brasell"
+date: "Sunday, December 27, 2015"
+output: pdf_document
+---
+
+# ToothGrowth analysis
